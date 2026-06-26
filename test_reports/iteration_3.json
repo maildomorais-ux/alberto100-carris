@@ -1,0 +1,34 @@
+{
+  "summary": "Auth login bug fix verified end-to-end. Backend: 5/5 pytest cases pass (login alberto/lagos2026 → 200 + access_token; wrong password → 401 'Credenciais inválidas'; wrong username → 401; /api/auth/me with valid token → 200; without token → 401/403). Frontend (mobile viewport 390x844): Mais tab shows menu-login when unauthenticated; tapping it opens /login with login-username pre-filled='alberto' and login-password empty; submitting password='wrong123' shows testID login-error with text 'Credenciais inválidas'; submitting password='lagos2026' navigates back to /more where menu-logout (Sair) and menu-admin (Administração) are now visible and menu-login is hidden; switching to Diário tab now renders the diary-fab-new floating action button; tapping it navigates to /diary/new where the new-title input is visible and editable. Admin user is correctly seeded.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_auth_login.py",
+    "/app/test_reports/pytest/auth_login_results.xml"
+  ],
+  "action_items": [
+    "Optional (not blocking, not user-visible): expo-secure-store on web does not persist the JWT — localStorage stays empty after login. Token only lives in React state, so a full page reload (browser refresh) logs the user out. Fine for native (SecureStore works there) and for the in-app navigation flow user actually performs, but worth a note. Could fall back to AsyncStorage / localStorage wrapper on web if persistent web sessions are desired.",
+    "Optional housekeeping: backend log shows passlib bcrypt version-detection warning (AttributeError: module 'bcrypt' has no attribute '__about__'). Harmless — login still works — but pin bcrypt<4.1 or upgrade passlib if you want a clean log."
+  ],
+  "critical_code_review_comments": [
+    "AppContext.tsx login flow correctly stores token in state immediately on success and uses it in apiFetch via Bearer header — confirmed via UI test (FAB appears on diary tab and /diary/new opens, both gated by `token`).",
+    "login.tsx correctly calls router.back() after success, displays testID login-error on failure, and pre-fills username='alberto'. Password field is correctly cleared on each entry to the screen.",
+    "more.tsx correctly swaps menu-login ↔ menu-logout based on `token` and renders menu-admin only when authenticated.",
+    "diary.tsx correctly gates diary-fab-new behind `token`.",
+    "Minor: expo-secure-store has no real persistent backend on web — see action_items."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_auth_login.py (new — 5 auth regression tests)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "None — used existing seeded admin user (alberto / lagos2026). Did not persist any TEST_ diary entry (filled the title field only, did not tap Guardar).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Auth fully working. Public preview URL: https://alberto-rails.preview.emergentagent.com. Login credentials: alberto / lagos2026. For tab navigation in Playwright the reliable selector is `[role=\"tablist\"] a[href*=\"diary\"]` (or '/more', '/route', '/'). Tabs do NOT have testID — they're rendered as <a> with href by expo-router web. Login error testID: login-error. The diary FAB testID: diary-fab-new. /diary/new title input testID: new-title.",
+  "rca_of_issue": "Original RCA (by main agent): the admin user document in MongoDB had a stale/corrupt bcrypt hash so every POST /api/auth/login returned 401 'Credenciais inválidas'. Main agent deleted the user document and restarted the backend, which re-ran the startup seed function and re-created the admin with a fresh hash of 'lagos2026'. This testing iteration confirms the fix end-to-end: 5/5 pytest auth cases pass and the full UI flow (Mais → Entrar → type password → success → menu-logout + menu-admin visible → Diário tab shows FAB → /diary/new editable) succeeds with zero pageerrors."
+}
