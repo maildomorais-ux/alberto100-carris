@@ -14,7 +14,7 @@ import SocialButtons from "@/src/components/SocialButtons";
 import Footer from "@/src/components/Footer";
 
 const HERO = "https://images.unsplash.com/photo-1581262208435-41726149a759?w=1600";
-const STORY_IMG = "https://images.pexels.com/photos/11461447/pexels-photo-11461447.jpeg?w=1600";
+const STORY_IMG = "https://customer-assets.emergentagent.com/job_alberto-rails/artifacts/f6esa7mi_2017965E-5A1D-44DF-B1A3-83542C7DACDC.png";
 const WHY_IMG = "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600";
 
 export default function Home() {
