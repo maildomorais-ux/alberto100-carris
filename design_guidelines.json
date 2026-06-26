@@ -1,0 +1,189 @@
+{
+  "app_name": "Alberto 100 Carris",
+  "personality": "3 Editorial structure with 6 Glass / Luxe surfaces",
+  "personality_one_liner": "A cinematic, deeply personal documentary journey blending NatGeo-style breathtaking photography, elegant typography, and profound storytelling.",
+  "color": {
+    "surface": "#050B14",
+    "onSurface": "#FFFFFF",
+    "surfaceSecondary": "#0E1A34",
+    "onSurfaceSecondary": "#B3C0D6",
+    "surfaceTertiary": "#172A52",
+    "onSurfaceTertiary": "#8A9BB8",
+    "surfaceInverse": "#FFFFFF",
+    "onSurfaceInverse": "#050B14",
+    "brand": "#E6C365",
+    "brandPrimary": "#E6C365",
+    "onBrandPrimary": "#050B14",
+    "brandSecondary": "#D4AF37",
+    "onBrandSecondary": "#050B14",
+    "brandTertiary": "#283C66",
+    "onBrandTertiary": "#E6C365",
+    "success": "#2D6A4F",
+    "onSuccess": "#D8F3DC",
+    "warning": "#B8860B",
+    "onWarning": "#FFF8DC",
+    "error": "#8B0000",
+    "onError": "#FFC0CB",
+    "info": "#1E3A8A",
+    "onInfo": "#DBEAFE",
+    "border": "#172A52",
+    "borderStrong": "#283C66",
+    "divider": "#172A52"
+  },
+  "typography": {
+    "displayFontFamily": "Cormorant Garamond",
+    "textFontFamily": "DM Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24,
+      "3xl": 32,
+      "4xl": 48
+    }
+  },
+  "spacing": {
+    "rule": "Editorial breathing room. Avoid dense clusters; give photos and text ample margins. Keep safe area clearances.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "bottom_tabs",
+  "icon_set": "Feather",
+  "glassmorphism": {
+    "enabled": true,
+    "do's": [
+      "Use heavy glass with a dark translucent base for sticky headers over scrolling photos.",
+      "Use blur on the bottom tab bar to let maps and gallery items peek through.",
+      "Use subtle glass cards layered over large cinematic background imagery."
+    ],
+    "dont's": [
+      "Don't stack glass on top of glass.",
+      "Don't use glass without a strong gradient scrim guaranteeing text readability."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Home",
+      "purpose": "Cinematic landing telling the overarching story of a 40-year dream spanning 20,000 km.",
+      "states": {
+        "loading": "Centered minimalist spinner in gold on a deep navy background.",
+        "empty": "N/A",
+        "error": "Elegant error message stating 'The journey is momentarily paused. Please reconnect.' with a 'Retry' button."
+      },
+      "layout": "Full-bleed hero image of a cinematic train window with a top-to-bottom dark gradient scrim. The display title 'Alberto 100 Carris' in large serif overlay. Below the fold, story blocks featuring 'The History' and 'Purpose' utilizing alternating text and edge-to-edge photography. Bottom floating CTA button: 'Começar a viagem' (Start Journey)."
+    },
+    {
+      "name": "Map (Mapa)",
+      "purpose": "Interactive geographical exploration of the 16 connected countries.",
+      "states": {
+        "loading": "Map skeleton outline fading in.",
+        "empty": "N/A",
+        "error": "Failed to load map data."
+      },
+      "layout": "Dark-themed interactive map with a glowing gold route line connecting countries. Tapping a country pulls up a bottom sheet (glass header) showcasing country-specific curiosities, a timeline date, and horizontal scrollable photos."
+    },
+    {
+      "name": "Diary (Diário)",
+      "purpose": "Chronological travel journal documenting daily experiences.",
+      "states": {
+        "loading": "Skeleton of diary entries.",
+        "empty": "Illustration of a vintage travel diary waiting to be written.",
+        "error": "Unable to load diary entries."
+      },
+      "layout": "Editorial list view. Each entry card acts like a magazine snippet: a large hero photo, a date/location subheader, a short snippet of text in DM Sans, and weather/distance metadata styled elegantly."
+    },
+    {
+      "name": "More (Mais)",
+      "purpose": "Hub for videos, gallery, live stats, equipment, and settings (language toggle).",
+      "states": {
+        "loading": "List skeleton.",
+        "empty": "N/A",
+        "error": "Unable to load menu."
+      },
+      "layout": "Grid or list of premium glass-effect tiles over a subtle abstract background. Live statistics dashboard prominent at the top with large gold numbers (Cormorant Garamond) over navy cards."
+    }
+  ],
+  "images": {
+    "hero_train_window": {
+      "url": "https://images.unsplash.com/photo-1677779709844-65f8cd68ddc0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHwzfHxjaW5lbWF0aWMlMjB0cmFpbiUyMHdpbmRvdyUyMHZpZXclMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzgyNDY4Mjc1fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "View from a train window at sunset"
+    },
+    "hero_mountain_river": {
+      "url": "https://images.pexels.com/photos/11325748/pexels-photo-11325748.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Peaceful mountain and river scene viewed through a train window"
+    },
+    "country_portugal_lagos": {
+      "url": "https://images.unsplash.com/photo-1608649944716-228404a0a8bb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwxfHxMYWdvcyUyMFBvcnR1Z2FsJTIwY29hc3R8ZW58MHx8fHwxNzgyNDY4Mjc1fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Lagos Portugal coastline"
+    },
+    "country_italy_roma": {
+      "url": "https://images.pexels.com/photos/11461447/pexels-photo-11461447.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Roma Termini night view"
+    },
+    "country_russia_transsiberian": {
+      "url": "https://images.unsplash.com/photo-1514970746-d4a465d514d0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwxfHxUcmFucy1TaWJlcmlhbiUyMHJhaWx3YXklMjBzbm93fGVufDB8fHx8MTc4MjQ2ODI3NXww&ixlib=rb-4.1.0&q=85",
+      "alt": "Approaching red train across mountains covered in snow"
+    },
+    "country_mongolia_steppes": {
+      "url": "https://images.pexels.com/photos/28103660/pexels-photo-28103660.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Mongolian steppe featuring a yurt"
+    },
+    "country_turkey_bosphorus": {
+      "url": "https://images.unsplash.com/photo-1719082993979-c4a36d62efad?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxCb3NwaG9ydXMlMjBicmlkZ2UlMjBJc3RhbmJ1bHxlbnwwfHx8fDE3ODI0NjgyNzV8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Bosphorus bridge Istanbul night"
+    },
+    "country_singapore_skyline": {
+      "url": "https://images.pexels.com/photos/18662417/pexels-photo-18662417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Singapore night skyline and Marina Bay Sands"
+    },
+    "empty_diary": {
+      "url": "https://images.pexels.com/photos/30773718/pexels-photo-30773718.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Rustic leather journal on a desk"
+    }
+  },
+  "haptics": {
+    "events": {
+      "tab_press": "selection",
+      "cta_button_press": "light",
+      "country_marker_tap": "medium",
+      "language_toggle": "light",
+      "diary_entry_open": "selection"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Strictly adhere to the dark 'cinematic' color palette using Deep Navy (#050B14) as the primary base and Champagne Gold (#E6C365) as the primary accent.",
+    "Typography MUST use Cormorant Garamond for all headings, display titles, and large numbers, paired with DM Sans for body copy and metadata. Keep font weights at 400 or 500 max.",
+    "Implement a persistent PT/EN language toggle pill (glass effect or subtle surfaceTertiary background).",
+    "All full-bleed hero images and background images MUST include a vertical linear gradient scrim (transparent to #050B14) to guarantee text readability.",
+    "For the Map screen, use an interactive map library styled darkly, with a gold glowing line indicating the train route and tappable markers for the 16 countries.",
+    "The Diary screen should act like an editorial layout: generous padding, edge-to-edge images in cards, beautiful serif dates, and a clear visual hierarchy.",
+    "Include subtle motion: parallax scrolling on the hero image, fade-in for diary list items, and smooth bottom-sheet transitions.",
+    "Never use generic blue/purple UI aesthetics; lean into the custom Deep Navy and Gold.",
+    "Ensure touch targets are a minimum of 44x44pt."
+  ]
+}
