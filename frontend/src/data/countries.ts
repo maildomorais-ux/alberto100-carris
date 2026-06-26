@@ -33,7 +33,7 @@ export const COUNTRIES: Country[] = [
   {
     code: "FR", name_pt: "França", name_en: "France", flag: "🇫🇷",
     cities: ["Hendaye", "Lyon"], arrival_date: "",
-    image: "https://images.unsplash.com/photo-1641893910627-5d77df036185?w=1600",
+    image: "https://images.pexels.com/photos/2901214/pexels-photo-2901214.jpeg?w=1600",
     curiosities_pt: ["Hendaye é o ponto onde a bitola muda e os comboios europeus se reorganizam.", "Lyon Part-Dieu é uma das maiores estações de cruzamento da Europa.", "Prato típico: quenelle de Lyon, acompanhada por molho Nantua."],
     curiosities_en: ["Hendaye is where the rail gauge changes and European trains reshuffle.", "Lyon Part-Dieu is one of Europe's largest interchange stations.", "Typical dish: Lyon quenelle, served with Nantua sauce."],
     lat: 45.7640, lng: 4.8357,

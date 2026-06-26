@@ -161,7 +161,7 @@ ROUTE = [
 SAMPLE_ENTRIES = [
     {
         "title": "O primeiro carril — Lagos",
-        "text": "Começa aqui. Quarenta anos depois daquela conversa em Roma Termini, a estação de Lagos cheira a mar e a futuro. O comboio parte dentro de minutos e, pela primeira vez na vida, não tenho pressa de chegar.",
+        "text": "Para mim, a viagem já começou há muito tempo. Tudo nasceu numa conversa na estação de Roma Termini, quando uma senhora americana me falou da maior viagem do mundo de comboio. Essa conversa deu origem ao sonho, mas a viagem começou pouco tempo depois.\n\nUm ou dois anos mais tarde, fiz uma viagem de comboio de Lagos até Lisboa com dois amigos. Lembro-me perfeitamente de pensar: \"A minha viagem já começou. A primeira etapa está feita.\"\n\nHoje, cerca de quarenta anos depois, não estou a começar uma viagem. Estou a continuá-la. O percurso Lagos–Lisboa foi a primeira etapa. Agora começa a segunda: Lisboa–Madrid, o verdadeiro início da grande travessia que me levará, carril após carril, até Singapura.",
         "location": "Lagos, Portugal",
         "country_code": "PT",
         "date": "",
@@ -173,8 +173,8 @@ SAMPLE_ENTRIES = [
         "lng": -8.6735,
     },
     {
-        "title": "Lisboa, o primeiro nó da rede",
-        "text": "Atravessei o Tejo ao entardecer. Lisboa recebe-nos como sempre recebeu — com saudade antecipada. Aqui cruzam-se todas as linhas de Portugal. Daqui parte, oficialmente, a viagem.",
+        "title": "Lisboa — fim da primeira etapa",
+        "text": "Atravessei o Tejo ao entardecer. Lisboa é o ponto onde se fecha o primeiro capítulo daquela viagem dos meus vinte anos — e onde começa, agora, o segundo. Daqui parte o comboio para Madrid.",
         "location": "Lisboa, Portugal",
         "country_code": "PT",
         "date": "",
@@ -186,17 +186,17 @@ SAMPLE_ENTRIES = [
         "lng": -9.1393,
     },
     {
-        "title": "Hendaye — a fronteira invisível",
-        "text": "Mudei de comboio em Hendaye. A passagem de Espanha para França acontece quase sem aviso. Um café, um carimbo no bilhete e já estou noutro país.",
-        "location": "Hendaye, França",
+        "title": "Barcelona → Lyon, atravessar os Pirenéus",
+        "text": "De Barcelona segui directamente para Lyon, atravessando os Pirenéus em comboio. Lyon recebe-nos com a confluência do Ródano e do Saône — uma cidade ferroviária, cruzamento natural da Europa.",
+        "location": "Lyon, França",
         "country_code": "FR",
         "date": "",
         "distance_km": 1450,
         "weather": "Nublado",
-        "photos": ["https://images.unsplash.com/photo-1551522435-a13afa10f103?w=1600"],
+        "photos": ["https://images.pexels.com/photos/2901214/pexels-photo-2901214.jpeg?w=1600"],
         "video": None,
-        "lat": 43.3597,
-        "lng": -1.7748,
+        "lat": 45.7640,
+        "lng": 4.8357,
     },
 ]
 
