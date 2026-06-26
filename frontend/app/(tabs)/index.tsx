@@ -47,7 +47,7 @@ export default function Home() {
           </View>
         </View>
         <View style={styles.heroContent}>
-          <Text style={styles.eyebrow}>{lang === "pt" ? "UMA VIAGEM POR CARRIL" : "A JOURNEY BY RAIL"}</Text>
+          <Text style={styles.eyebrow}>{lang === "pt" ? "UMA VIAGEM COM SONHOS" : "A JOURNEY MADE OF DREAMS"}</Text>
           <Text
             style={styles.heroTitle}
             numberOfLines={1}
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     fontSize: 11, fontWeight: "600", marginBottom: spacing.md,
   },
   heroTitle: {
-    color: colors.onSurface, fontFamily: fonts.display, fontSize: 40,
-    lineHeight: 46, letterSpacing: 0.3,
+    color: colors.onSurface, fontFamily: fonts.display, fontSize: 34,
+    lineHeight: 40, letterSpacing: 0.3,
   },
   heroRule: { width: 48, height: 2, backgroundColor: colors.brand, marginVertical: spacing.lg },
   heroLine: { color: colors.onSurface, fontFamily: fonts.display, fontSize: type.xxl, marginBottom: 4, letterSpacing: 0.4 },
