@@ -99,6 +99,26 @@ class DiaryEntryOut(DiaryEntryIn):
     updated_at: datetime
 
 
+class PlaceIn(BaseModel):
+    country_code: str
+    city: str
+    order: int = 0
+    description: str = ""
+    experience: str = ""
+    photos: List[str] = Field(default_factory=list)
+    video_url: Optional[str] = None  # YouTube watch/share URL or video ID
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    distance_km: float = 0
+    is_air_link: bool = False
+
+
+class PlaceOut(PlaceIn):
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class StatsOut(BaseModel):
     km_traveled: float
     days: int
@@ -118,6 +138,26 @@ logger = logging.getLogger("alberto")
 
 
 # ---------- Seed ----------
+ROUTE = [
+    {"code": "PT", "cities": ["Lagos", "Lisboa"], "lat": 39.4, "lng": -8.2},
+    {"code": "ES", "cities": ["Madrid", "Barcelona"], "lat": 40.4, "lng": -3.7},
+    {"code": "FR", "cities": ["Hendaye", "Lyon"], "lat": 45.76, "lng": 4.84},
+    {"code": "DE", "cities": ["Munique"], "lat": 48.14, "lng": 11.58},
+    {"code": "AT", "cities": ["Viena"], "lat": 48.21, "lng": 16.37},
+    {"code": "HU", "cities": ["Budapeste"], "lat": 47.50, "lng": 19.04},
+    {"code": "RO", "cities": ["Bucareste"], "lat": 44.43, "lng": 26.10},
+    {"code": "TR", "cities": ["Istambul", "Ancara", "Kars"], "lat": 41.01, "lng": 28.98},
+    {"code": "GE", "cities": ["Tbilisi"], "lat": 41.72, "lng": 44.83, "is_air_link": True},
+    {"code": "RU", "cities": ["Moscovo", "Irkutsk"], "lat": 55.75, "lng": 37.62},
+    {"code": "MN", "cities": ["Ulaanbaatar"], "lat": 47.92, "lng": 106.92},
+    {"code": "CN", "cities": ["Pequim", "Kunming"], "lat": 39.90, "lng": 116.41},
+    {"code": "LA", "cities": ["Vientiane"], "lat": 17.97, "lng": 102.63},
+    {"code": "TH", "cities": ["Banguecoque"], "lat": 13.76, "lng": 100.50},
+    {"code": "MY", "cities": ["Kuala Lumpur"], "lat": 3.14, "lng": 101.69},
+    {"code": "SG", "cities": ["Singapura"], "lat": 1.35, "lng": 103.82},
+]
+
+
 SAMPLE_ENTRIES = [
     {
         "title": "O primeiro carril — Lagos",
@@ -177,7 +217,6 @@ async def on_startup():
         )
         logger.info("Seeded admin user: %s", ADMIN_USERNAME)
     else:
-        # Ensure hash is current
         if not verify_password(ADMIN_PASSWORD, existing.get("password_hash", "")):
             await users.update_one(
                 {"username": ADMIN_USERNAME},
@@ -187,19 +226,37 @@ async def on_startup():
 
     # Seed initial diary entries
     entries = db["entries"]
-    count = await entries.count_documents({})
-    if count == 0:
+    if await entries.count_documents({}) == 0:
         for sample in SAMPLE_ENTRIES:
             now = datetime.now(timezone.utc)
-            await entries.insert_one(
-                {
+            await entries.insert_one({"id": str(uuid.uuid4()), **sample, "created_at": now, "updated_at": now})
+        logger.info("Seeded %d sample entries", len(SAMPLE_ENTRIES))
+
+    # Seed default places (one per city) from the static route
+    places = db["places"]
+    if await places.count_documents({}) == 0:
+        order = 0
+        for country in ROUTE:
+            for city in country["cities"]:
+                now = datetime.now(timezone.utc)
+                await places.insert_one({
                     "id": str(uuid.uuid4()),
-                    **sample,
+                    "country_code": country["code"],
+                    "city": city,
+                    "order": order,
+                    "description": "",
+                    "experience": "",
+                    "photos": [],
+                    "video_url": None,
+                    "lat": country.get("lat"),
+                    "lng": country.get("lng"),
+                    "distance_km": 0,
+                    "is_air_link": country.get("is_air_link", False),
                     "created_at": now,
                     "updated_at": now,
-                }
-            )
-        logger.info("Seeded %d sample entries", len(SAMPLE_ENTRIES))
+                })
+                order += 1
+        logger.info("Seeded %d places", order)
 
 
 @app.on_event("shutdown")
@@ -328,6 +385,81 @@ async def get_stats():
         entries_count=len(entries),
     )
 
+
+def serialize_place(d) -> dict:
+    return {
+        "id": d["id"],
+        "country_code": d["country_code"],
+        "city": d["city"],
+        "order": d.get("order", 0),
+        "description": d.get("description", ""),
+        "experience": d.get("experience", ""),
+        "photos": d.get("photos", []),
+        "video_url": d.get("video_url"),
+        "lat": d.get("lat"),
+        "lng": d.get("lng"),
+        "distance_km": d.get("distance_km", 0),
+        "is_air_link": d.get("is_air_link", False),
+        "created_at": d["created_at"],
+        "updated_at": d["updated_at"],
+    }
+
+
+@api.get("/places")
+async def list_places():
+    cursor = db["places"].find({}, {"_id": 0}).sort("order", 1)
+    return [serialize_place(d) async for d in cursor]
+
+
+@api.get("/places/{place_id}")
+async def get_place(place_id: str):
+    doc = await db["places"].find_one({"id": place_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "Place not found")
+    return serialize_place(doc)
+
+
+@api.put("/places/{place_id}")
+async def update_place(place_id: str, payload: PlaceIn, _user: str = Depends(get_current_user)):
+    now = datetime.now(timezone.utc)
+    data = {**payload.model_dump(), "updated_at": now}
+    result = await db["places"].find_one_and_update(
+        {"id": place_id}, {"$set": data}, return_document=True, projection={"_id": 0}
+    )
+    if not result:
+        raise HTTPException(404, "Place not found")
+    return serialize_place(result)
+
+
+@api.post("/places/{place_id}/photo")
+async def add_photo(place_id: str, payload: dict, _user: str = Depends(get_current_user)):
+    photo = payload.get("photo")
+    if not photo:
+        raise HTTPException(400, "photo required")
+    now = datetime.now(timezone.utc)
+    result = await db["places"].find_one_and_update(
+        {"id": place_id},
+        {"$push": {"photos": photo}, "$set": {"updated_at": now}},
+        return_document=True, projection={"_id": 0},
+    )
+    if not result:
+        raise HTTPException(404, "Place not found")
+    return serialize_place(result)
+
+
+@api.delete("/places/{place_id}/photo/{index}")
+async def remove_photo(place_id: str, index: int, _user: str = Depends(get_current_user)):
+    doc = await db["places"].find_one({"id": place_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "Place not found")
+    photos = doc.get("photos", [])
+    if 0 <= index < len(photos):
+        photos.pop(index)
+    now = datetime.now(timezone.utc)
+    await db["places"].update_one({"id": place_id}, {"$set": {"photos": photos, "updated_at": now}})
+    doc["photos"] = photos
+    doc["updated_at"] = now
+    return serialize_place(doc)
 
 app.include_router(api)
 

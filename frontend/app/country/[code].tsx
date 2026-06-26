@@ -62,8 +62,45 @@ export default function CountryDetail() {
               <Text style={styles.curiosityText}>{c}</Text>
             </View>
           ))}
+
+          <CitiesList countryCode={country.code} />
         </View>
       </ScrollView>
+    </View>
+  );
+}
+
+function CitiesList({ countryCode }: { countryCode: string }) {
+  const { lang, apiFetch } = useApp();
+  const router = useRouter();
+  const [places, setPlaces] = React.useState<any[]>([]);
+  React.useEffect(() => {
+    apiFetch("/api/places").then((r) => r.json()).then((all) =>
+      setPlaces((all || []).filter((p: any) => p.country_code === countryCode))
+    ).catch(() => {});
+  }, [countryCode, apiFetch]);
+  if (places.length === 0) return null;
+  return (
+    <View>
+      <Text style={[styles.label, { marginTop: spacing.xxl }]}>
+        {lang === "pt" ? "Cidades nesta etapa" : "Cities in this leg"}
+      </Text>
+      {places.map((p) => (
+        <Pressable
+          key={p.id}
+          onPress={() => router.push(`/place/${p.id}`)}
+          style={styles.cityRow}
+          testID={`place-link-${p.id}`}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={styles.cityRowName}>{p.city}</Text>
+            <Text style={styles.cityRowMeta}>
+              {p.photos.length} {lang === "pt" ? "fotos" : "photos"}{p.video_url ? `  ·  ${lang === "pt" ? "vídeo" : "video"}` : ""}
+            </Text>
+          </View>
+          <Feather name="chevron-right" size={18} color={colors.brand} />
+        </Pressable>
+      ))}
     </View>
   );
 }
@@ -87,6 +124,9 @@ const styles = StyleSheet.create({
   },
   cityChipText: { color: colors.onSurface, fontFamily: fonts.body, fontSize: 13 },
   curiosity: { flexDirection: "row", marginBottom: spacing.lg, gap: spacing.lg },
+  cityRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: spacing.lg, paddingHorizontal: spacing.lg, backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, marginBottom: spacing.sm, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border },
+  cityRowName: { color: colors.onSurface, fontFamily: fonts.display, fontSize: type.lg },
+  cityRowMeta: { color: colors.onSurfaceTertiary, fontFamily: fonts.body, fontSize: 11, letterSpacing: 1, textTransform: "uppercase", marginTop: 3 },
   curiosityIndex: { color: colors.brand, fontFamily: fonts.display, fontSize: type.xxl, width: 36 },
   curiosityText: { flex: 1, color: colors.onSurfaceSecondary, fontFamily: fonts.body, fontSize: type.lg, lineHeight: 26 },
   notFound: { color: colors.onSurface, padding: spacing.xl, fontFamily: fonts.display, fontSize: type.xl },

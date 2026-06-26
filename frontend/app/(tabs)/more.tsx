@@ -40,6 +40,10 @@ export default function More() {
     { key: "about", icon: "user", label: t(lang, "more_about"), onPress: () => router.push("/about") },
   ];
 
+  const adminMenu = token ? [
+    { key: "admin", icon: "settings", label: lang === "pt" ? "Administração" : "Admin", onPress: () => router.push("/admin") },
+  ] : [];
+
   return (
     <View style={styles.container}>
       <ScreenHeader title={t(lang, "tab_more")} />
@@ -59,7 +63,7 @@ export default function More() {
 
         {/* Menu */}
         <View style={styles.menuBlock}>
-          {menu.map((m) => (
+          {[...menu, ...adminMenu].map((m) => (
             <Pressable key={m.key} onPress={m.onPress} style={styles.menuRow} testID={`menu-${m.key}`}>
               <View style={styles.menuIcon}>
                 <Feather name={m.icon as any} size={18} color={colors.brand} />
