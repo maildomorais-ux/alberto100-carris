@@ -16,7 +16,7 @@ export type Country = {
 export const COUNTRIES: Country[] = [
   {
     code: "PT", name_pt: "Portugal", name_en: "Portugal", flag: "🇵🇹",
-    cities: ["Lagos", "Lisboa", "Porto"], arrival_date: "2026-06-01",
+    cities: ["Lagos", "Lisboa"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1608649944716-228404a0a8bb?w=1600",
     curiosities_pt: ["O primeiro carril foi assentado em 1856.", "A linha do Algarve corre paralela ao mar durante quase 100 km.", "Pastéis de nata no comboio são obrigatórios."],
     curiosities_en: ["The first rail was laid in 1856.", "The Algarve line runs along the sea for nearly 100 km.", "Pastéis de nata on the train are mandatory."],
@@ -24,7 +24,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "ES", name_pt: "Espanha", name_en: "Spain", flag: "🇪🇸",
-    cities: ["Madrid", "Barcelona"], arrival_date: "2026-06-04",
+    cities: ["Madrid", "Barcelona"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=1600",
     curiosities_pt: ["O AVE liga Madrid a Barcelona em 2h30.", "Espanha tem a maior rede de alta velocidade da Europa.", "Tortilla em qualquer estação."],
     curiosities_en: ["The AVE links Madrid to Barcelona in 2h30.", "Spain has Europe's largest high-speed network.", "Tortilla at every station."],
@@ -32,15 +32,15 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "FR", name_pt: "França", name_en: "France", flag: "🇫🇷",
-    cities: ["Paris", "Hendaye"], arrival_date: "2026-06-06",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600",
-    curiosities_pt: ["O TGV foi o primeiro comboio comercial a passar os 300 km/h.", "Gare de Lyon serve mais de 100 milhões de pessoas por ano."],
-    curiosities_en: ["The TGV was the first commercial train to break 300 km/h.", "Gare de Lyon serves over 100 million people a year."],
-    lat: 46.6034, lng: 1.8883,
+    cities: ["Hendaye", "Lyon"], arrival_date: "",
+    image: "https://images.unsplash.com/photo-1524396309943-e03f5249f002?w=1600",
+    curiosities_pt: ["Hendaye é o ponto onde a bitola muda e os comboios europeus se reorganizam.", "Lyon Part-Dieu é uma das maiores estações de cruzamento da Europa.", "A linha pelo vale do Ródano segue colinas e vinhas durante horas."],
+    curiosities_en: ["Hendaye is where the rail gauge changes and European trains reshuffle.", "Lyon Part-Dieu is one of Europe's largest interchange stations.", "The line down the Rhône valley follows hills and vineyards for hours."],
+    lat: 45.7640, lng: 4.8357,
   },
   {
     code: "DE", name_pt: "Alemanha", name_en: "Germany", flag: "🇩🇪",
-    cities: ["Munique", "Berlim"], arrival_date: "2026-06-09",
+    cities: ["Munique"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=1600",
     curiosities_pt: ["A Deutsche Bahn opera mais de 40.000 km de linhas.", "O ICE é uma das maravilhas modernas da ferrovia."],
     curiosities_en: ["Deutsche Bahn runs over 40,000 km of track.", "The ICE is one of rail's modern wonders."],
@@ -56,7 +56,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "HU", name_pt: "Hungria", name_en: "Hungary", flag: "🇭🇺",
-    cities: ["Budapeste"], arrival_date: "2026-06-14",
+    cities: ["Budapeste"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=1600",
     curiosities_pt: ["A Keleti Pályaudvar é uma das mais belas estações da Europa.", "O comboio para Bucareste atravessa a Transilvânia."],
     curiosities_en: ["Keleti Pályaudvar is one of Europe's finest stations.", "The Bucharest train crosses Transylvania."],
@@ -64,7 +64,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "RO", name_pt: "Roménia", name_en: "Romania", flag: "🇷🇴",
-    cities: ["Bucareste"], arrival_date: "2026-06-16",
+    cities: ["Bucareste"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1583309217394-d586ab8efb19?w=1600",
     curiosities_pt: ["A CFR mantém locomotivas a diesel históricas em rotas locais.", "Os Cárpatos vistos do comboio mudam de cor a cada minuto."],
     curiosities_en: ["CFR still operates historic diesel locos on rural lines.", "The Carpathians shift colour by the minute from the train."],
@@ -72,7 +72,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "TR", name_pt: "Turquia", name_en: "Turkey", flag: "🇹🇷",
-    cities: ["Istambul", "Ancara"], arrival_date: "2026-06-20",
+    cities: ["Istambul"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1719082993979-c4a36d62efad?w=1600",
     curiosities_pt: ["O Marmaray atravessa o Bósforo por baixo de água.", "Aqui acaba a Europa e começa a Ásia. Literalmente."],
     curiosities_en: ["The Marmaray runs under the Bosphorus.", "Here Europe ends and Asia begins. Literally."],
@@ -80,7 +80,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "GE", name_pt: "Geórgia", name_en: "Georgia", flag: "🇬🇪",
-    cities: ["Tbilisi"], arrival_date: "2026-06-23", isAirLink: true,
+    cities: ["Tbilisi"], arrival_date: "", isAirLink: true,
     image: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=1600",
     curiosities_pt: ["A única ligação não-ferroviária da viagem: um voo curto até Tbilisi.", "O vinho georgiano tem 8.000 anos."],
     curiosities_en: ["The only non-rail link of the journey: a short flight to Tbilisi.", "Georgian wine is 8,000 years old."],
@@ -88,7 +88,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "RU", name_pt: "Rússia", name_en: "Russia", flag: "🇷🇺",
-    cities: ["Moscovo", "Irkutsk"], arrival_date: "2026-06-28",
+    cities: ["Moscovo", "Irkutsk"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1514970746-d4a465d514d0?w=1600",
     curiosities_pt: ["O Transiberiano cobre 9.289 km. É a viagem.", "Sete fusos horários. Uma vida.", "Lago Baikal: o mais antigo e profundo do mundo."],
     curiosities_en: ["The Trans-Siberian covers 9,289 km. It is the journey.", "Seven time zones. A lifetime.", "Lake Baikal: oldest and deepest on Earth."],
@@ -96,7 +96,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "MN", name_pt: "Mongólia", name_en: "Mongolia", flag: "🇲🇳",
-    cities: ["Ulan Bator"], arrival_date: "2026-07-08",
+    cities: ["Ulaanbaatar"], arrival_date: "",
     image: "https://images.pexels.com/photos/28103660/pexels-photo-28103660.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     curiosities_pt: ["A estepe parece infinita. E é.", "Uma yurt no horizonte muda tudo."],
     curiosities_en: ["The steppe feels infinite. And it is.", "A yurt on the horizon changes everything."],
@@ -104,7 +104,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "CN", name_pt: "China", name_en: "China", flag: "🇨🇳",
-    cities: ["Pequim", "Xangai", "Kunming"], arrival_date: "2026-07-12",
+    cities: ["Pequim", "Kunming"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=1600",
     curiosities_pt: ["A China tem mais comboios de alta velocidade do que o resto do mundo somado.", "O CR400 atinge os 350 km/h em produção."],
     curiosities_en: ["China has more high-speed rail than the rest of the world combined.", "The CR400 cruises at 350 km/h in service."],
@@ -112,7 +112,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "LA", name_pt: "Laos", name_en: "Laos", flag: "🇱🇦",
-    cities: ["Luang Prabang", "Vientiane"], arrival_date: "2026-07-22",
+    cities: ["Vientiane"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1528181304800-259b08848526?w=1600",
     curiosities_pt: ["A linha China-Laos abriu em 2021.", "Atravessa selva, túneis e arrozais."],
     curiosities_en: ["The China-Laos line opened in 2021.", "It cuts through jungle, tunnels and rice paddies."],
@@ -120,7 +120,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "TH", name_pt: "Tailândia", name_en: "Thailand", flag: "🇹🇭",
-    cities: ["Banguecoque", "Chiang Mai"], arrival_date: "2026-07-26",
+    cities: ["Banguecoque"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=1600",
     curiosities_pt: ["Hua Lamphong era a estação central por mais de um século.", "Pad thai num comboio noturno é uma experiência espiritual."],
     curiosities_en: ["Hua Lamphong was the central station for over a century.", "Pad thai on a night train is a spiritual experience."],
@@ -128,7 +128,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "MY", name_pt: "Malásia", name_en: "Malaysia", flag: "🇲🇾",
-    cities: ["Kuala Lumpur"], arrival_date: "2026-07-30",
+    cities: ["Kuala Lumpur"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1600",
     curiosities_pt: ["A KTM liga Banguecoque a Singapura quase sem interrupção.", "Selva tropical à janela durante horas."],
     curiosities_en: ["KTM links Bangkok to Singapore almost seamlessly.", "Tropical jungle out the window for hours."],
@@ -136,7 +136,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "SG", name_pt: "Singapura", name_en: "Singapore", flag: "🇸🇬",
-    cities: ["Singapura"], arrival_date: "2026-08-02",
+    cities: ["Singapura"], arrival_date: "",
     image: "https://images.pexels.com/photos/18662417/pexels-photo-18662417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     curiosities_pt: ["Fim de linha. 20.000 km depois.", "Marina Bay, ao entardecer, depois de quatro décadas de espera."],
     curiosities_en: ["End of the line. 20,000 km later.", "Marina Bay at dusk, forty years in the making."],

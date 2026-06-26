@@ -13,8 +13,8 @@ import LanguageToggle from "@/src/components/LanguageToggle";
 import SocialButtons from "@/src/components/SocialButtons";
 import Footer from "@/src/components/Footer";
 
-// Comboio cinematográfico atravessando paisagem — Lagos → Singapura
-const HERO = "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600";
+// Travessia cinematográfica — comboio em paisagem dramática (Lagos → Singapura)
+const HERO = "https://images.unsplash.com/photo-1581262208435-41726149a759?w=1600";
 const STORY_IMG = "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600";
 const WHY_IMG = "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600";
 
