@@ -16,12 +16,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.brand,
         tabBarInactiveTintColor: colors.onSurfaceTertiary,
-        tabBarLabelStyle: {
-          fontFamily: fonts.body,
-          fontSize: 11,
-          letterSpacing: 0.6,
-          textTransform: "uppercase",
-        },
+        tabBarLabelStyle: { fontFamily: fonts.body, fontSize: 10, letterSpacing: 0.4, textTransform: "uppercase" },
         tabBarStyle: {
           position: "absolute",
           borderTopWidth: StyleSheet.hairlineWidth,
@@ -39,34 +34,17 @@ export default function TabsLayout() {
           ),
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t(lang, "tab_home"),
-          tabBarIcon: ({ color, size }) => <Feather name="compass" color={color} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="route"
-        options={{
-          title: t(lang, "tab_route"),
-          tabBarIcon: ({ color, size }) => <Feather name="map" color={color} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="diary"
-        options={{
-          title: t(lang, "tab_diary"),
-          tabBarIcon: ({ color, size }) => <Feather name="book-open" color={color} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: t(lang, "tab_more"),
-          tabBarIcon: ({ color, size }) => <Feather name="more-horizontal" color={color} size={size} />,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: lang === "pt" ? "Início" : "Home",
+        tabBarIcon: ({ color, size }) => <Feather name="home" color={color} size={size} /> }} />
+      <Tabs.Screen name="diary" options={{ title: lang === "pt" ? "Diário" : "Diary",
+        tabBarIcon: ({ color, size }) => <Feather name="book-open" color={color} size={size} /> }} />
+      <Tabs.Screen name="route" options={{ title: lang === "pt" ? "Percurso" : "Route",
+        tabBarIcon: ({ color, size }) => <Feather name="map" color={color} size={size} /> }} />
+      <Tabs.Screen name="about" options={{ title: lang === "pt" ? "Sobre" : "About",
+        tabBarIcon: ({ color, size }) => <Feather name="info" color={color} size={size} /> }} />
+      <Tabs.Screen name="gallery" options={{ title: lang === "pt" ? "Galeria" : "Gallery",
+        tabBarIcon: ({ color, size }) => <Feather name="image" color={color} size={size} /> }} />
+      <Tabs.Screen name="more" options={{ href: null }} />
     </Tabs>
   );
 }

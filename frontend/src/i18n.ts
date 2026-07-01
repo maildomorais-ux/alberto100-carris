@@ -3,9 +3,9 @@ export type Lang = "pt" | "en";
 export const STRINGS: Record<Lang, Record<string, string>> = {
   pt: {
     app_title: "Alberto 100 Carris",
-    app_subtitle_1: "Lagos → Singapura",
-    app_subtitle_2: "Mais de 20.000 km. Quase tudo por comboio.",
-    app_subtitle_3: "Uma viagem sonhada durante quatro décadas.",
+    app_subtitle_1: "Lisboa não é o fim da linha.",
+    app_subtitle_2: "É apenas o começo.",
+    app_subtitle_3: "Lagos → Singapura, quase tudo por comboio.",
     cta_start: "Começar a viagem",
     tab_home: "Início",
     tab_route: "Rota",
@@ -65,9 +65,9 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
   },
   en: {
     app_title: "Alberto 100 Carris",
-    app_subtitle_1: "Lagos → Singapore",
-    app_subtitle_2: "Over 20,000 km. Almost entirely by train.",
-    app_subtitle_3: "A journey dreamed of for four decades.",
+    app_subtitle_1: "Lisbon is not the end of the line.",
+    app_subtitle_2: "It is only the beginning.",
+    app_subtitle_3: "Lagos → Singapore, almost all by train.",
     cta_start: "Begin the journey",
     tab_home: "Home",
     tab_route: "Route",

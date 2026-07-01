@@ -32,10 +32,10 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "FR", name_pt: "França", name_en: "France", flag: "🇫🇷",
-    cities: ["Hendaye", "Lyon"], arrival_date: "",
+    cities: ["Lyon"], arrival_date: "",
     image: "https://images.pexels.com/photos/2901214/pexels-photo-2901214.jpeg?w=1600",
-    curiosities_pt: ["Hendaye é o ponto onde a bitola muda e os comboios europeus se reorganizam.", "Lyon Part-Dieu é uma das maiores estações de cruzamento da Europa.", "Prato típico: quenelle de Lyon, acompanhada por molho Nantua."],
-    curiosities_en: ["Hendaye is where the rail gauge changes and European trains reshuffle.", "Lyon Part-Dieu is one of Europe's largest interchange stations.", "Typical dish: Lyon quenelle, served with Nantua sauce."],
+    curiosities_pt: ["Lyon Part-Dieu é uma das maiores estações de cruzamento da Europa.", "A cidade cresceu no encontro de dois rios: o Ródano e o Saône.", "Prato típico: quenelle de Lyon, acompanhada por molho Nantua."],
+    curiosities_en: ["Lyon Part-Dieu is one of Europe's largest interchange stations.", "The city grew at the meeting of two rivers: the Rhône and the Saône.", "Typical dish: Lyon quenelle, served with Nantua sauce."],
     lat: 45.7640, lng: 4.8357,
   },
   {
@@ -72,10 +72,10 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "TR", name_pt: "Turquia", name_en: "Turkey", flag: "🇹🇷",
-    cities: ["Istambul", "Ancara", "Kars"], arrival_date: "",
+    cities: ["Istambul"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1719082993979-c4a36d62efad?w=1600",
-    curiosities_pt: ["O Marmaray atravessa o Bósforo por baixo de água.", "O Doğu Ekspresi liga Ancara a Kars em 24 horas de paisagem pura.", "Aqui acaba a Europa e começa a Ásia. Literalmente.", "Prato típico: kebab de Adana, com pão fresco, sumagre e cebola roxa."],
-    curiosities_en: ["The Marmaray runs under the Bosphorus.", "The Doğu Ekspresi links Ankara to Kars in 24 hours of pure landscape.", "Here Europe ends and Asia begins. Literally.", "Typical dish: Adana kebab, with fresh bread, sumac and red onion."],
+    curiosities_pt: ["O Marmaray atravessa o Bósforo por baixo de água.", "Aqui acaba a Europa e começa a Ásia. Literalmente.", "Prato típico: kebab de Adana, com pão fresco, sumagre e cebola roxa."],
+    curiosities_en: ["The Marmaray runs under the Bosphorus.", "Here Europe ends and Asia begins. Literally.", "Typical dish: Adana kebab, with fresh bread, sumac and red onion."],
     lat: 38.9637, lng: 35.2433,
   },
   {
@@ -88,7 +88,7 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: "RU", name_pt: "Rússia", name_en: "Russia", flag: "🇷🇺",
-    cities: ["Moscovo", "Irkutsk"], arrival_date: "",
+    cities: ["Moscovo", "Irkutsk", "Lago Baikal"], arrival_date: "",
     image: "https://images.unsplash.com/photo-1514970746-d4a465d514d0?w=1600",
     curiosities_pt: ["O Transiberiano cobre 9.289 km. É a viagem.", "Sete fusos horários. Uma vida.", "O Lago Baikal é o mais antigo e profundo do mundo — guarda um quinto da água doce do planeta.", "Prato típico: pelmeni siberianos, cozidos em caldo, com creme azedo."],
     curiosities_en: ["The Trans-Siberian covers 9,289 km. It is the journey.", "Seven time zones. A lifetime.", "Lake Baikal is the oldest and deepest on Earth — holding a fifth of the planet's fresh water.", "Typical dish: Siberian pelmeni, boiled in broth, with sour cream."],

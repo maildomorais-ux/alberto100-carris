@@ -16,7 +16,10 @@
       }
     },
     "android": {
-      "permissions": ["READ_MEDIA_IMAGES", "READ_EXTERNAL_STORAGE"],
+      "permissions": [
+        "READ_MEDIA_IMAGES",
+        "READ_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000"
@@ -38,7 +41,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

@@ -10,6 +10,7 @@ import { useApp } from "@/src/contexts/AppContext";
 import { COUNTRIES } from "@/src/data/countries";
 import ScreenHeader from "@/src/components/ScreenHeader";
 import VideoPlayer from "@/src/components/VideoPlayer";
+import { pickAndUpload } from "@/src/utils/uploads";
 
 export default function EditPlace() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -111,6 +112,24 @@ export default function EditPlace() {
     );
   };
 
+  const pickVideo = async () => {
+    setBusy(true);
+    try {
+      const result = await pickAndUpload("video", token!);
+      if (result) {
+        setVideoUrl(result.url);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    } catch (e: any) {
+      Alert.alert(
+        lang === "pt" ? "Erro" : "Error",
+        e?.message === "permission_denied"
+          ? (lang === "pt" ? "Conceda acesso à galeria." : "Grant gallery access.")
+          : (lang === "pt" ? "Não foi possível carregar o vídeo." : "Could not upload video."),
+      );
+    } finally { setBusy(false); }
+  };
+
   const country = COUNTRIES.find((c) => c.code === place.country_code);
 
   return (
@@ -140,11 +159,18 @@ export default function EditPlace() {
           <Text style={styles.hint}>{lang === "pt" ? "Mantenha pressionado para apagar." : "Long press to delete."}</Text>
 
           {/* Video */}
-          <Text style={[styles.label, { marginTop: spacing.xxl }]}>{lang === "pt" ? "Vídeo (link do YouTube)" : "Video (YouTube URL)"}</Text>
+          <Text style={[styles.label, { marginTop: spacing.xxl }]}>{lang === "pt" ? "Vídeo" : "Video"}</Text>
+          <View style={styles.videoControls}>
+            <Pressable onPress={pickVideo} style={styles.videoUploadBtn} disabled={busy} testID="upload-video">
+              {busy ? <ActivityIndicator color={colors.brand} /> : <Feather name="upload" size={16} color={colors.brand} />}
+              <Text style={styles.videoUploadText}>{lang === "pt" ? "Carregar do iPhone" : "Upload from device"}</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.hint}>{lang === "pt" ? "Ou cole um link do YouTube:" : "Or paste a YouTube link:"}</Text>
           <TextInput
             value={videoUrl}
             onChangeText={setVideoUrl}
-            placeholder="https://youtube.com/watch?v=..."
+            placeholder="https://youtube.com/watch?v=... ou /api/uploads/..."
             placeholderTextColor={colors.onSurfaceTertiary}
             autoCapitalize="none"
             autoCorrect={false}
@@ -211,6 +237,9 @@ const styles = StyleSheet.create({
   photoOverlay: { position: "absolute", right: 4, top: 4, padding: 4, borderRadius: 4, backgroundColor: "rgba(0,0,0,0.55)" },
   addCell: { width: "31%", aspectRatio: 1, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.brand, borderStyle: "dashed", alignItems: "center", justifyContent: "center", gap: 4 },
   addLabel: { color: colors.brand, fontFamily: fonts.body, fontSize: 10, letterSpacing: 1, textTransform: "uppercase" },
+  videoControls: { flexDirection: "row", gap: spacing.sm, marginBottom: spacing.sm },
+  videoUploadBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: spacing.md, borderRadius: radius.md, borderWidth: 1, borderStyle: "dashed", borderColor: colors.brand, backgroundColor: colors.surfaceSecondary },
+  videoUploadText: { color: colors.brand, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1, textTransform: "uppercase" },
   submit: { marginTop: spacing.xl, backgroundColor: colors.brand, paddingVertical: spacing.lg, borderRadius: radius.pill, alignItems: "center" },
   submitText: { color: colors.surface, fontFamily: fonts.body, fontWeight: "700", letterSpacing: 2, textTransform: "uppercase" },
 });

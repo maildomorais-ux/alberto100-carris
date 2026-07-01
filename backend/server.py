@@ -2,7 +2,9 @@
 Alberto 100 Carris - Backend API
 A cinematic travel diary from Lagos (Portugal) to Singapore by train.
 """
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -16,6 +18,7 @@ from pathlib import Path
 import os
 import uuid
 import logging
+import shutil
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -141,14 +144,14 @@ logger = logging.getLogger("alberto")
 ROUTE = [
     {"code": "PT", "cities": ["Lagos", "Lisboa"], "lat": 39.4, "lng": -8.2},
     {"code": "ES", "cities": ["Madrid", "Barcelona"], "lat": 40.4, "lng": -3.7},
-    {"code": "FR", "cities": ["Hendaye", "Lyon"], "lat": 45.76, "lng": 4.84},
+    {"code": "FR", "cities": ["Lyon"], "lat": 45.76, "lng": 4.84},
     {"code": "DE", "cities": ["Munique"], "lat": 48.14, "lng": 11.58},
     {"code": "AT", "cities": ["Viena"], "lat": 48.21, "lng": 16.37},
     {"code": "HU", "cities": ["Budapeste"], "lat": 47.50, "lng": 19.04},
     {"code": "RO", "cities": ["Bucareste"], "lat": 44.43, "lng": 26.10},
-    {"code": "TR", "cities": ["Istambul", "Ancara", "Kars"], "lat": 41.01, "lng": 28.98},
+    {"code": "TR", "cities": ["Istambul"], "lat": 41.01, "lng": 28.98},
     {"code": "GE", "cities": ["Tbilisi"], "lat": 41.72, "lng": 44.83, "is_air_link": True},
-    {"code": "RU", "cities": ["Moscovo", "Irkutsk"], "lat": 55.75, "lng": 37.62},
+    {"code": "RU", "cities": ["Moscovo", "Irkutsk", "Lago Baikal"], "lat": 55.75, "lng": 37.62},
     {"code": "MN", "cities": ["Ulaanbaatar"], "lat": 47.92, "lng": 106.92},
     {"code": "CN", "cities": ["Pequim", "Kunming"], "lat": 39.90, "lng": 116.41},
     {"code": "LA", "cities": ["Vientiane"], "lat": 17.97, "lng": 102.63},
@@ -462,6 +465,28 @@ async def remove_photo(place_id: str, index: int, _user: str = Depends(get_curre
     return serialize_place(doc)
 
 app.include_router(api)
+
+# ---------- File uploads (photos & videos, no AI, plain storage) ----------
+UPLOADS_DIR = ROOT_DIR / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
+ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".gif"}
+ALLOWED_VIDEO_EXT = {".mp4", ".mov", ".m4v", ".webm"}
+
+
+@api.post("/upload")
+async def upload_file(file: UploadFile = File(...), _user: str = Depends(get_current_user)):
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in ALLOWED_IMAGE_EXT and ext not in ALLOWED_VIDEO_EXT:
+        raise HTTPException(400, f"Unsupported file type: {ext}")
+    kind = "image" if ext in ALLOWED_IMAGE_EXT else "video"
+    fname = f"{uuid.uuid4().hex}{ext}"
+    dest = UPLOADS_DIR / fname
+    with dest.open("wb") as out:
+        shutil.copyfileobj(file.file, out)
+    return {"url": f"/api/uploads/{fname}", "kind": kind, "filename": fname}
+
+
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
