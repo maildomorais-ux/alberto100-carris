@@ -170,7 +170,7 @@ SAMPLE_ENTRIES = [
         "date": "",
         "distance_km": 0,
         "weather": "Sol, 24 °C",
-        "photos": ["https://images.unsplash.com/photo-1543429776-2782fc8e1acd?w=1600"],
+        "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Lagos_pedestrial_area%2C_Algarve%2C_Portugal.JPG"],
         "video": None,
         "lat": 37.1028,
         "lng": -8.6735,
@@ -464,7 +464,6 @@ async def remove_photo(place_id: str, index: int, _user: str = Depends(get_curre
     doc["updated_at"] = now
     return serialize_place(doc)
 
-app.include_router(api)
 
 # ---------- File uploads (photos & videos, no AI, plain storage) ----------
 UPLOADS_DIR = ROOT_DIR / "uploads"
@@ -485,6 +484,8 @@ async def upload_file(file: UploadFile = File(...), _user: str = Depends(get_cur
         shutil.copyfileobj(file.file, out)
     return {"url": f"/api/uploads/{fname}", "kind": kind, "filename": fname}
 
+
+app.include_router(api)
 
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 

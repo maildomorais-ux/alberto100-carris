@@ -63,7 +63,8 @@ export default function DiaryDetail() {
             <View style={styles.metaRow}>
               <Meta icon="map-pin" text={entry.location} />
               {entry.distance_km > 0 && <Meta icon="navigation-2" text={`${Math.round(entry.distance_km)} km`} />}
-              {entry.weather && <Meta icon="sun" text={entry.weather} />}
+              {entry.distance_km > 0 && <Meta icon="clock" text={`≈ ${Math.max(1, Math.round(entry.distance_km / 80))} h`} />}
+              {entry.weather && !/\?/.test(entry.weather) && <Meta icon="cloud" text={entry.weather} />}
             </View>
           </View>
         </View>

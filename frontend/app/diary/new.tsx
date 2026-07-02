@@ -35,7 +35,7 @@ export default function NewEntry() {
         body: JSON.stringify({
           title, text, location,
           country_code: country.toUpperCase(),
-          date,
+          date: "",
           distance_km: parseFloat(distance) || 0,
           weather: weather || null,
           photos: photo ? [photo] : [],

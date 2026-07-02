@@ -1,0 +1,43 @@
+{
+  "summary": "All 7 user-reported bugs verified fixed end-to-end. Backend: 15/15 pytest cases pass after I fixed one CRITICAL server.py ordering bug — `app.include_router(api)` was called BEFORE `@api.post('/upload')` was defined, so /api/upload returned 404 for every request (uploads completely broken). Moved include_router to after the upload route was registered; sudo supervisorctl restart backend; re-ran full suite → 15/15 green. Photo URLs: Lagos entry now serves the Wikipedia 'Lagos_pedestrial_area,_Algarve,_Portugal.JPG' (Portugal, NOT Pisa) and Lisboa serves 'Exterior_da_estação_de_oriente.jpg' (Gare do Oriente), both HTTP 200 via a browser User-Agent with 2 redirects each, content-type image/*. Frontend (mobile 390x844): diary/Lisboa detail page shows hero photo of Gare do Oriente, meta row: '305 km • ≈ 4 h • Brisa quente' — the computed travel time (Math.max(1, Math.round(305/80)) = 4) renders with the clock icon exactly as specified, and no '(?)' appears anywhere in the meta. Lagos detail's hero photo is the Wikipedia Lagos pedestrian area (verified by scraping <img> src attributes). The i18n rename is correct ('Meteorologia (opcional)' PT / 'Weather (optional)' EN). diary/new.tsx uses `date: \"\"` — grep confirmed the only occurrence is `date: \"\"` (no bare `date,`). Places admin PUT works — the backend test PUTs a place without a `date` field and gets 200 + GET-verified persistence. Uploads: POST /api/upload accepts multipart PNG, stores under /app/backend/uploads/, returns {url,kind,filename}, and the file is retrievable via /api/uploads/<name>; requires auth (401/403 without token); rejects .exe with 400. No AI service is called in the upload path — server.py has zero OpenAI/emergent-LLM references. countries.ts spot-check: FR uses Lyon (pexels-photo-2901214) — not Paris/Eiffel.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_alberto_bugfix_iter4.py",
+    "/app/test_reports/pytest/iter4_results.xml"
+  ],
+  "action_items": [
+    "(Already fixed by testing agent) Route registration order in /app/backend/server.py — /api/upload must be declared BEFORE app.include_router(api). This has been corrected and backend restarted. Please keep this ordering when editing server.py in the future.",
+    "Optional cosmetic: passlib bcrypt version warning at startup (AttributeError: module 'bcrypt' has no attribute '__about__') — harmless, pinned in previous iteration notes. Not blocking.",
+    "Optional cosmetic: expo warns about outdated versions (expo@54.0.34, expo-font@14.0.11, expo-router@6.0.23). Not blocking any flow.",
+    "Optional: expo-secure-store on web is in-memory — a full page reload logs the user out. Already noted in iteration_3."
+  ],
+  "critical_code_review_comments": [
+    "server.py: FIXED — moved `app.include_router(api)` from line 467 to AFTER the /upload route declaration. Previously the upload route was registered on the APIRouter but the router had already been included in the app, so FastAPI never picked up the new route → 404. Uploads endpoint fully broken until this fix.",
+    "server.py: POST /api/upload correctly uses shutil.copyfileobj to write to /app/backend/uploads. No OpenAI, emergent LLM, or any AI integration references anywhere in the upload path (grep-verified). Confirmed no AI credits are consumed.",
+    "server.py places PUT endpoint accepts PlaceIn model which does NOT include any `date` field — user's 'Property date doesn't exist' error is resolved at the model layer.",
+    "diary/[id].tsx line 66: correctly renders `<Meta icon='clock' text={`≈ ${Math.max(1, Math.round(entry.distance_km/80))} h`} />` when distance_km > 0, ensuring a valid travel time always shows.",
+    "diary/[id].tsx line 67: weather is hidden if /\\?/.test(entry.weather) — the '4h(?)' string containing '?' would be filtered out, but the seeded weather values ('Sol, 24 °C', 'Brisa quente', 'Nublado') contain no '?' so they render correctly.",
+    "diary/new.tsx line 38: `date: \"\"` in the POST body — the runtime error 'Property date doesn't exist' can no longer trigger from this file.",
+    "i18n.ts: pt.new_weather = 'Meteorologia (opcional)', en.new_weather = 'Weather (optional)' — confirmed on lines 52 and 114.",
+    "admin/place/[id].tsx: PUT payload builds cleanly from state and place — no `date` field is ever sent. Save button has testID='save'. All photo/video/description/experience/distance fields present with proper testIDs."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (moved app.include_router(api) to AFTER the /api/upload route so it is actually registered; also moved the /api/uploads static mount below include_router for clarity)",
+    "/app/backend/tests/test_alberto_bugfix_iter4.py (new — 15 regression tests: 6 photos, 2 places PUT, 3 uploads, 2 auth, 2 entries CRUD)"
+  ],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% (Lisboa detail meta + hero photo + Lagos hero photo all verified in UI)"},
+  "seed_data_creation": "None persisted. Test suite creates a TEST_new_entry, verifies via GET, then deletes and re-verifies 404. Also PUTs a place with 'TEST_edit description' and restores the original description in teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 4 iterations of bug fixes verified. Backend URL: https://alberto-rails.preview.emergentagent.com. Credentials: alberto / lagos2026. Regression suites: /app/backend/tests/test_auth_login.py (5), /app/backend/tests/test_alberto_api.py, /app/backend/tests/test_alberto_bugfix.py, /app/backend/tests/test_alberto_bugfix_iter4.py (15). CRITICAL: if any new /api/* route is added, ensure @api.<method>() is declared BEFORE `app.include_router(api)` in server.py — otherwise the route silently 404s. Uploads land in /app/backend/uploads/ and are served at /api/uploads/<filename>. The upload endpoint requires Authorization: Bearer <token>. Photos in seeded entries are: Lagos → wikimedia Lagos_pedestrial_area, Lisboa → wikimedia Exterior_da_estação_de_oriente, Lyon → pexels 2901214.",
+  "rca_of_issue": "Root cause of the /api/upload 404: `app.include_router(api)` was called on line 467 of server.py, but @api.post('/upload') was declared on line 476 — AFTER the router had been included. FastAPI's include_router copies the routes present on the router at the moment of the call; routes added to the router afterwards are NOT propagated. This meant every upload attempt returned 404 Not Found. Fix: moved `app.include_router(api)` to line 490 (after all @api decorators including /upload); moved the StaticFiles mount for /api/uploads just below it (mounts on `app` directly so its position doesn't affect registration, kept together for readability). Restart backend → /api/upload returns 200 with {url, kind, filename}."
+}
