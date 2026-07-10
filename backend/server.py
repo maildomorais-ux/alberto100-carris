@@ -139,7 +139,7 @@ class EpisodeIn(BaseModel):
     gallery: List[str] = Field(default_factory=list)
     lat: Optional[float] = None
     lng: Optional[float] = None
-    status: str = "published"  # "published" or "draft"
+    status: str = "draft"  # "published" or "draft"
 
 
 class EpisodeOut(EpisodeIn):
