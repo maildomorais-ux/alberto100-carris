@@ -122,6 +122,32 @@ class PlaceOut(PlaceIn):
     updated_at: datetime
 
 
+class EpisodeIn(BaseModel):
+    number: int = 1
+    title_pt: str = ""
+    title_en: str = ""
+    subtitle_pt: Optional[str] = None
+    subtitle_en: Optional[str] = None
+    description_pt: str = ""
+    description_en: str = ""
+    country_code: Optional[str] = None
+    location: str = ""
+    date: str = ""  # ISO YYYY-MM-DD (opcional)
+    duration: str = ""  # e.g. "12:24"
+    cover_photo: Optional[str] = None
+    video_url: Optional[str] = None
+    gallery: List[str] = Field(default_factory=list)
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    status: str = "published"  # "published" or "draft"
+
+
+class EpisodeOut(EpisodeIn):
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class StatsOut(BaseModel):
     km_traveled: float
     days: int
@@ -260,6 +286,63 @@ async def on_startup():
                 })
                 order += 1
         logger.info("Seeded %d places", order)
+
+
+    # Seed default episodes (migrating the previous 4 hard-coded videos)
+    episodes = db["episodes"]
+    if await episodes.count_documents({}) == 0:
+        now = datetime.now(timezone.utc)
+        default_eps = [
+            {
+                "number": 1,
+                "title_pt": "Episódio 01 — Lagos → Lisboa",
+                "title_en": "Episode 01 — Lagos → Lisbon",
+                "duration": "12:24",
+                "cover_photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Lagos_pedestrial_area%2C_Algarve%2C_Portugal.JPG",
+                "country_code": "PT", "location": "Lagos",
+            },
+            {
+                "number": 2,
+                "title_pt": "Episódio 02 — Lisboa → Madrid",
+                "title_en": "Episode 02 — Lisbon → Madrid",
+                "duration": "18:02",
+                "cover_photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Exterior_da_esta%C3%A7%C3%A3o_de_oriente.jpg",
+                "country_code": "ES", "location": "Madrid",
+            },
+            {
+                "number": 3,
+                "title_pt": "Episódio 03 — Bósforo",
+                "title_en": "Episode 03 — The Bosphorus",
+                "duration": "14:48",
+                "cover_photo": "https://images.unsplash.com/photo-1719082993979-c4a36d62efad?w=1200",
+                "country_code": "TR", "location": "Istambul",
+            },
+            {
+                "number": 4,
+                "title_pt": "Episódio 04 — Transiberiano",
+                "title_en": "Episode 04 — Trans-Siberian",
+                "duration": "22:11",
+                "cover_photo": "https://images.unsplash.com/photo-1514970746-d4a465d514d0?w=1200",
+                "country_code": "RU", "location": "Moscovo → Irkutsk",
+            },
+        ]
+        for e in default_eps:
+            await episodes.insert_one({
+                "id": str(uuid.uuid4()),
+                "number": e["number"],
+                "title_pt": e["title_pt"], "title_en": e["title_en"],
+                "subtitle_pt": None, "subtitle_en": None,
+                "description_pt": "", "description_en": "",
+                "country_code": e.get("country_code"),
+                "location": e.get("location", ""),
+                "date": "", "duration": e["duration"],
+                "cover_photo": e.get("cover_photo"),
+                "video_url": None, "gallery": [],
+                "lat": None, "lng": None,
+                "status": "published",
+                "created_at": now, "updated_at": now,
+            })
+        logger.info("Seeded %d episodes", len(default_eps))
 
 
 @app.on_event("shutdown")
@@ -463,6 +546,81 @@ async def remove_photo(place_id: str, index: int, _user: str = Depends(get_curre
     doc["photos"] = photos
     doc["updated_at"] = now
     return serialize_place(doc)
+
+
+# ---------- Episodes (video posts) ----------
+def serialize_episode(d) -> dict:
+    return {
+        "id": d["id"],
+        "number": d.get("number", 1),
+        "title_pt": d.get("title_pt", ""),
+        "title_en": d.get("title_en", ""),
+        "subtitle_pt": d.get("subtitle_pt"),
+        "subtitle_en": d.get("subtitle_en"),
+        "description_pt": d.get("description_pt", ""),
+        "description_en": d.get("description_en", ""),
+        "country_code": d.get("country_code"),
+        "location": d.get("location", ""),
+        "date": d.get("date", ""),
+        "duration": d.get("duration", ""),
+        "cover_photo": d.get("cover_photo"),
+        "video_url": d.get("video_url"),
+        "gallery": d.get("gallery", []),
+        "lat": d.get("lat"),
+        "lng": d.get("lng"),
+        "status": d.get("status", "published"),
+        "created_at": d["created_at"],
+        "updated_at": d["updated_at"],
+    }
+
+
+@api.get("/episodes")
+async def list_episodes():
+    cursor = db["episodes"].find({"status": "published"}, {"_id": 0}).sort("number", 1)
+    return [serialize_episode(d) async for d in cursor]
+
+
+@api.get("/episodes/all")
+async def list_episodes_all(_user: str = Depends(get_current_user)):
+    cursor = db["episodes"].find({}, {"_id": 0}).sort("number", 1)
+    return [serialize_episode(d) async for d in cursor]
+
+
+@api.get("/episodes/{ep_id}")
+async def get_episode(ep_id: str):
+    doc = await db["episodes"].find_one({"id": ep_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "Episode not found")
+    return serialize_episode(doc)
+
+
+@api.post("/episodes", status_code=201)
+async def create_episode(payload: EpisodeIn, _user: str = Depends(get_current_user)):
+    now = datetime.now(timezone.utc)
+    doc = {"id": str(uuid.uuid4()), **payload.model_dump(), "created_at": now, "updated_at": now}
+    await db["episodes"].insert_one(doc.copy())
+    doc.pop("_id", None)
+    return serialize_episode(doc)
+
+
+@api.put("/episodes/{ep_id}")
+async def update_episode(ep_id: str, payload: EpisodeIn, _user: str = Depends(get_current_user)):
+    now = datetime.now(timezone.utc)
+    result = await db["episodes"].find_one_and_update(
+        {"id": ep_id}, {"$set": {**payload.model_dump(), "updated_at": now}},
+        return_document=True, projection={"_id": 0},
+    )
+    if not result:
+        raise HTTPException(404, "Episode not found")
+    return serialize_episode(result)
+
+
+@api.delete("/episodes/{ep_id}", status_code=204)
+async def delete_episode(ep_id: str, _user: str = Depends(get_current_user)):
+    res = await db["episodes"].delete_one({"id": ep_id})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Episode not found")
+    return None
 
 
 # ---------- File uploads (photos & videos, no AI, plain storage) ----------
