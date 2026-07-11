@@ -106,14 +106,20 @@ class PlaceIn(BaseModel):
     country_code: str
     city: str
     order: int = 0
+    title: str = ""
+    short_description: str = ""
     description: str = ""
     experience: str = ""
+    body: str = ""
+    date: str = ""
+    links: List[dict] = Field(default_factory=list)
     photos: List[str] = Field(default_factory=list)
-    video_url: Optional[str] = None  # YouTube watch/share URL or video ID
+    video_url: Optional[str] = None
     lat: Optional[float] = None
     lng: Optional[float] = None
     distance_km: float = 0
     is_air_link: bool = False
+    status: str = "draft"
 
 
 class PlaceOut(PlaceIn):
@@ -281,6 +287,7 @@ async def on_startup():
                     "lng": country.get("lng"),
                     "distance_km": 0,
                     "is_air_link": country.get("is_air_link", False),
+                    "status": "published",
                     "created_at": now,
                     "updated_at": now,
                 })
@@ -478,14 +485,20 @@ def serialize_place(d) -> dict:
         "country_code": d["country_code"],
         "city": d["city"],
         "order": d.get("order", 0),
+        "title": d.get("title", ""),
+        "short_description": d.get("short_description", ""),
         "description": d.get("description", ""),
         "experience": d.get("experience", ""),
+        "body": d.get("body", ""),
+        "date": d.get("date", ""),
+        "links": d.get("links", []),
         "photos": d.get("photos", []),
         "video_url": d.get("video_url"),
         "lat": d.get("lat"),
         "lng": d.get("lng"),
         "distance_km": d.get("distance_km", 0),
         "is_air_link": d.get("is_air_link", False),
+        "status": d.get("status", "published"),
         "created_at": d["created_at"],
         "updated_at": d["updated_at"],
     }
@@ -493,8 +506,26 @@ def serialize_place(d) -> dict:
 
 @api.get("/places")
 async def list_places():
+    cursor = db["places"].find({"status": {"$ne": "draft"}}, {"_id": 0}).sort("order", 1)
+    return [serialize_place(d) async for d in cursor]
+
+
+@api.get("/places/all")
+async def list_places_all(_user: str = Depends(get_current_user)):
     cursor = db["places"].find({}, {"_id": 0}).sort("order", 1)
     return [serialize_place(d) async for d in cursor]
+
+
+class ReorderIn(BaseModel):
+    ids: List[str]
+
+
+@api.post("/places/reorder")
+async def reorder_places(payload: ReorderIn, _user: str = Depends(get_current_user)):
+    now = datetime.now(timezone.utc)
+    for i, pid in enumerate(payload.ids):
+        await db["places"].update_one({"id": pid}, {"$set": {"order": i, "updated_at": now}})
+    return {"ok": True, "count": len(payload.ids)}
 
 
 @api.get("/places/{place_id}")

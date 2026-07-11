@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { useLocalSearchParams, useRouter, Redirect } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -17,8 +17,14 @@ export default function EditPlace() {
   const { lang, token, apiFetch } = useApp();
   const router = useRouter();
   const [place, setPlace] = useState<any>(null);
+  const [title, setTitle] = useState("");
+  const [shortDesc, setShortDesc] = useState("");
   const [description, setDescription] = useState("");
   const [experience, setExperience] = useState("");
+  const [body, setBody] = useState("");
+  const [date, setDate] = useState("");
+  const [linksText, setLinksText] = useState("");
+  const [status, setStatus] = useState("draft");
   const [videoUrl, setVideoUrl] = useState("");
   const [distance, setDistance] = useState("0");
   const [saving, setSaving] = useState(false);
@@ -29,8 +35,14 @@ export default function EditPlace() {
     if (r.ok) {
       const p = await r.json();
       setPlace(p);
+      setTitle(p.title || "");
+      setShortDesc(p.short_description || "");
       setDescription(p.description || "");
       setExperience(p.experience || "");
+      setBody(p.body || "");
+      setDate(p.date || "");
+      setStatus(p.status || "draft");
+      setLinksText((p.links || []).map((l: any) => `${l.label || ""}|${l.url || ""}`).join("\n"));
       setVideoUrl(p.video_url || "");
       setDistance(String(p.distance_km || 0));
     }
@@ -44,19 +56,24 @@ export default function EditPlace() {
   const save = async () => {
     setSaving(true);
     try {
+      const links = linksText.split("\n").map(s => s.trim()).filter(Boolean).map(line => {
+        const [label, ...urlParts] = line.split("|");
+        return { label: (label || "").trim(), url: urlParts.join("|").trim() };
+      }).filter(l => l.url);
       await apiFetch(`/api/places/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           country_code: place.country_code,
           city: place.city,
           order: place.order,
-          description,
-          experience,
+          title, short_description: shortDesc,
+          description, experience, body, date, links,
           photos: place.photos,
           video_url: videoUrl || null,
           lat: place.lat, lng: place.lng,
           distance_km: parseFloat(distance) || 0,
           is_air_link: place.is_air_link,
+          status,
         }),
       });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -180,7 +197,13 @@ export default function EditPlace() {
           {videoUrl ? <VideoPlayer url={videoUrl} /> : null}
 
           {/* Description */}
-          <Text style={[styles.label, { marginTop: spacing.xxl }]}>{lang === "pt" ? "Descrição da cidade" : "City description"}</Text>
+          <Text style={[styles.label, { marginTop: spacing.xxl }]}>{lang === "pt" ? "Título" : "Title"}</Text>
+          <TextInput value={title} onChangeText={setTitle} placeholderTextColor={colors.onSurfaceTertiary} style={styles.input} testID="place-title" />
+
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Pequena descrição" : "Short description"}</Text>
+          <TextInput value={shortDesc} onChangeText={setShortDesc} multiline placeholderTextColor={colors.onSurfaceTertiary} style={[styles.input, styles.multiline]} testID="place-short" />
+
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Descrição da cidade" : "City description"}</Text>
           <TextInput
             value={description}
             onChangeText={setDescription}
@@ -204,6 +227,15 @@ export default function EditPlace() {
           />
 
           {/* Distance */}
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Texto livre (parágrafos)" : "Free text (paragraphs)"}</Text>
+          <TextInput value={body} onChangeText={setBody} multiline placeholderTextColor={colors.onSurfaceTertiary} style={[styles.input, styles.multiline, { minHeight: 160 }]} testID="place-body" />
+
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Data de publicação (AAAA-MM-DD)" : "Publication date"}</Text>
+          <TextInput value={date} onChangeText={setDate} placeholderTextColor={colors.onSurfaceTertiary} style={styles.input} autoCapitalize="none" testID="place-date" />
+
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Links externos (um por linha, formato: título|URL)" : "External links (one per line: label|URL)"}</Text>
+          <TextInput value={linksText} onChangeText={setLinksText} multiline autoCapitalize="none" autoCorrect={false} placeholder="ex: Ver no mapa|https://maps.google.com/..." placeholderTextColor={colors.onSurfaceTertiary} style={[styles.input, styles.multiline]} testID="place-links" />
+
           <Text style={[styles.label, { marginTop: spacing.lg }]}>{lang === "pt" ? "Distância percorrida (km)" : "Distance travelled (km)"}</Text>
           <TextInput
             value={distance}
@@ -213,6 +245,17 @@ export default function EditPlace() {
             style={styles.input}
             testID="distance"
           />
+
+          <View style={styles.publishRow}>
+            <Text style={styles.label}>{lang === "pt" ? "Publicado" : "Published"}</Text>
+            <Switch
+              value={status === "published"}
+              onValueChange={(v) => setStatus(v ? "published" : "draft")}
+              thumbColor={status === "published" ? colors.brand : "#888"}
+              trackColor={{ true: "rgba(230,195,101,0.4)", false: colors.surfaceTertiary }}
+              testID="place-status"
+            />
+          </View>
 
           <Pressable onPress={save} disabled={saving} style={[styles.submit, saving && { opacity: 0.5 }]} testID="save">
             {saving ? <ActivityIndicator color={colors.surface} /> : <Text style={styles.submitText}>{lang === "pt" ? "Guardar" : "Save"}</Text>}
@@ -241,5 +284,6 @@ const styles = StyleSheet.create({
   videoUploadBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: spacing.md, borderRadius: radius.md, borderWidth: 1, borderStyle: "dashed", borderColor: colors.brand, backgroundColor: colors.surfaceSecondary },
   videoUploadText: { color: colors.brand, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1, textTransform: "uppercase" },
   submit: { marginTop: spacing.xl, backgroundColor: colors.brand, paddingVertical: spacing.lg, borderRadius: radius.pill, alignItems: "center" },
+  publishRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: spacing.xl, paddingHorizontal: spacing.md, paddingVertical: spacing.md, backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border },
   submitText: { color: colors.surface, fontFamily: fonts.body, fontWeight: "700", letterSpacing: 2, textTransform: "uppercase" },
 });
