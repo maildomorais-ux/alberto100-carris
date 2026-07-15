@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
   "build": "expo export --platform web",
-  "preinstall": "./scripts/cmd-g...",build": "expo export --plaform web","preinstall"scripts": {
+  "preinstall": "./scripts/cmd-g...",build":
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
