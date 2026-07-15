@@ -5,8 +5,6 @@
   "scripts": {
   "build": "expo export --platform web",
   "preinstall": "./scripts/cmd-g...",build": "expo export --plaform web","preinstall"scripts": {
-  "build":
-    "preinstall": "./scripts/cmd-guard.js --preinstall",
     "start": 
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
