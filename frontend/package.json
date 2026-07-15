@@ -5,7 +5,7 @@
   "scripts": {
   "build": "expo export --platform web",
   "preinstall": "./scripts/cmd-g...",build": "expo export --plaform web","preinstall"scripts": {
-    "start": 
+    "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
