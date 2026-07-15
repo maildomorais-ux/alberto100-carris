@@ -2,9 +2,12 @@
   "name": "frontend",
   "main": "expo-router/entry",
   "version": "1.0.0",
-  "scripts": {
+  "scripts": {""scripts": {
+  "build": "expo export --platform web",
+  "preinstall": "./scripts/cmd-g...",build": "expo export --plaform web","preinstall"scripts": {
+  "build": "expo export --
     "preinstall": "./scripts/cmd-guard.js --preinstall",
-    "start": "expo start",
+    "start": "expo 
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
