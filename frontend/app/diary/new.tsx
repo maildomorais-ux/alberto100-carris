@@ -21,8 +21,7 @@ export default function NewEntry() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!token) return <Redirect href="/login" />;
-
+ // if (!token) return <Redirect href="/login" />;
   const save = async () => {
     if (!title || !text || !location) {
       setError("required");
